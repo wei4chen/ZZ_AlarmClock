@@ -3,4 +3,17 @@
     <string name="bar_setting">編輯</string>
     <string name="bar_name">鬧鐘</string>
 
+    <!--alarm utils-->
+    <string name="saturday">Sat</string>
+    <string name="friday">Fri</string>
+    <string name="thursday">Thu</string>
+    <string name="wednesday">Wed</string>
+    <string name="tuesday">Tue</string>
+    <string name="monday">Mon</string>
+    <string name="sunday">Sun</string>
+    <string name="timeNull" translatable="false">--:--</string>
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
+    <string name="failure_network">Failure network connection</string>
+
 </resources>
