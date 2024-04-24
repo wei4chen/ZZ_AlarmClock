@@ -9,10 +9,10 @@ public class AlarmModel {
     public int ringPosition;
     public String ring;
     public boolean vibrate;
+    public boolean remind;
     
 //    public boolean sunday, monday, tuesday, wednesday, thursday, friday, saturday;
 //    public int volume;
-//    public int remind;
 //    public boolean weather;
 
     public AlarmModel(int id, AlarmClockBuilder builder) {
@@ -58,5 +58,7 @@ public class AlarmModel {
     public void setVibrate(boolean vibrate) {
         this.vibrate = vibrate;
     }
-
+    public void setRemind(boolean remind) {
+        this.remind = remind;
+    }
 }

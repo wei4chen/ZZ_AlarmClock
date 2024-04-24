@@ -16,4 +16,23 @@
     <string name="Cancel">Cancel</string>
     <string name="failure_network">Failure network connection</string>
 
+    <!--alarm activity-->
+    <string name="time" translatable="false">00</string>
+    <string name="timePoint" translatable="false">:</string>
+    <string name="alarmTextTag">標籤</string>
+    <string name="alarmRepeat">重複</string>
+    <string name="alarmRepeatChoice">永不</string>
+    <string name="alarmRepeatEveryDay">每天</string>
+    <string name="alarmRingtone">鈴聲</string>
+    <string name="alarmRingChoice" translatable="false">雷達</string>
+    <string name="alarmSwitchVibration">震動</string>
+    <string name="alarmRemind">稍後提醒</string>
+
+
+    <string name="buttonCancel">取消</string>
+    <string name="buttonDelect">刪除</string>
+    <string name="buttonSave">儲存</string>
+
+
+
 </resources>
