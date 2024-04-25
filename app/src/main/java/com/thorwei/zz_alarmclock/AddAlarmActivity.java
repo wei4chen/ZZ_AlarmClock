@@ -2,6 +2,7 @@ package com.thorwei.zz_alarmclock;
 
 import static com.thorwei.zz_alarmclock.MainActivity.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -32,18 +34,9 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class AddAlarmActivity extends AppCompatActivity{
-
-    TextView toolbarTitle;
-    CardView cvRepeat;
-    TextView tvRepeat;
-    CardView cvRing;
-    TextView tvRingtones;
-    CardView cvRemind;
-    TextView tvRemind;
     Switch switchVibration;
     EditText edittextTeg;
     Button btnCencel, btnDelete, btnSave;
-
     Spinner spnRepeat;
     public static TextView tvHours;
     public static TextView tvMin;
@@ -63,43 +56,12 @@ public class AddAlarmActivity extends AppCompatActivity{
 
         btnCencel = (Button) findViewById(R.id.btn_cencel);
         btnDelete = (Button) findViewById(R.id.btn_delete);
-        btnSave = (Button) findViewById(R.id.btn_save);
-
         btnDelete.setVisibility(View.INVISIBLE);
+        btnSave = (Button) findViewById(R.id.btn_save);
 
         spnRepeat = (Spinner) findViewById(R.id.spinner_repeat);
         edittextTeg = (EditText) findViewById(R.id.edittext_teg);
         switchVibration = (Switch) findViewById(R.id.switch_vibration);
-
-
-/*
-        int hour = alarmClockLab.hour;
-        int minute = alarmClockLab.minute;
-
-        String h = String.valueOf(hour);
-        String m = String.valueOf(minute);
-
-        if (minute < 10) {
-            m = "0" + minute;
-        }
-        if (hour < 10) {
-            h = "0" + hour;
-        }
-        tvHours.setText(h);
-        tvMin.setText(m);
-*/
-        /*
-        final Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
-
-        tvHours.setText(String.format("%02d",alarmClockLab.hour));
-        tvMin.setText(String.format("%02d",alarmClockLab.minute));
-        */
-
-        //tvHours.setText("07");
-        //tvMin.setText("00");
-
 
         int[] currentTime = getCurrentTime();
         alarmClockLab = new AlarmClockBuilder().builderLab(0);
@@ -116,50 +78,9 @@ public class AddAlarmActivity extends AppCompatActivity{
         tvMin.setText(String.format("%02d",alarmClockLab.minute));
 
         spnRepeat.setSelection(alarmClockLab.repeat);
-
-/*
-        int[] currentTime = getCurrentTime();
-        alarmClockLab = new AlarmClockBuilder().builderLab(0);
-        alarmClockLab.setEnable(true);
-        alarmClockLab.setHour(currentTime[0]);
-        alarmClockLab.setMinute(currentTime[1]);
-        alarmClockLab.setRepeat(0);
-        alarmClockLab.setTag(""+R.string.bar_name);
-        alarmClockLab.setRingPosition(0);
-        alarmClockLab.setRing(firstRing(this));
-        alarmClockLab.setVibrate(false);
-    //    alarmClockLab.setRemind(false);
-
-        tvRingtones.setText(alarmClockLab.ring);
-        switchVibration.setChecked(alarmClockLab.vibrate);
-    //    cvRepeat.setOnClickListener(this);
-    //    cvRing.setOnClickListener(this);
-    //    cvRemind.setOnClickListener(this);
-
-        int hour = alarmClockLab.hour;
-        int minute = alarmClockLab.minute;
-
-        String h = String.valueOf(hour);
-        String m = String.valueOf(minute);
-
-        if (minute < 10) {
-            m = "0" + minute;
-        }
-        if (hour < 10) {
-            h = "0" + hour;
-        }
-        tvHours.setText(h);
-        tvMin.setText(m);
-
-        switchVibration.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                alarmClockLab.setVibrate(isChecked);
-            }
-        });
-
-        */
     }
+
+
 
     @Override
     protected void onResume() {
@@ -203,7 +124,7 @@ public class AddAlarmActivity extends AppCompatActivity{
 
     }
     public void AlarmSave(View view) {
-        Log.e(TAG,"AlarmSave");
+        //Log.e(TAG,"AlarmSave");
         if(edittextTeg.getText() != null && edittextTeg.getText().length() != 0) {
             //Log.e(TAG,"edittextTeg["+edittextTeg.getText()+"]");
             alarmClockLab.setTag("" + edittextTeg.getText());
@@ -211,13 +132,37 @@ public class AddAlarmActivity extends AppCompatActivity{
         alarmClockLab.setRepeat(spnRepeat.getSelectedItemPosition());
         alarmClockLab.setVibrate(switchVibration.isChecked());
 
-
-
         AlarmDBUtils.insertAlarmClock(AddAlarmActivity.this, alarmClockLab);
         AlarmModel alarm = AlarmDBUtils.queryAlarmClock(AddAlarmActivity.this).get(0);
         if (alarm.enable) {
             AlarmManagerHelper.startAlarmClock(AddAlarmActivity.this, alarm);
         }
         finish();
+    }
+
+    public void OnTimeClick(View view) {
+        //Log.e(TAG,"OnTimeClick");
+        DialogFragment dialogFragment = new TimePickerFragment();
+        dialogFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+
+    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+        public TimePickerFragment() {
+        }
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            return new TimePickerDialog(getActivity(), this, alarmClockLab.hour, alarmClockLab.minute, DateFormat.is24HourFormat(getActivity()));
+        }
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            String min = String.format("%02d",minute);
+            String hour = String.format("%02d",hourOfDay);
+
+            tvHours.setText(hour);
+            tvMin.setText(min);
+            alarmClockLab.setMinute(minute);
+            alarmClockLab.setHour(hourOfDay);
+        }
     }
 }

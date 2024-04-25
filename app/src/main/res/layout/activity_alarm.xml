@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="128dp"
         android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
+        android:onClick="OnTimeClick"
         app:cardBackgroundColor="@color/cardview_dark_background"
         app:cardElevation="8dp">
 
