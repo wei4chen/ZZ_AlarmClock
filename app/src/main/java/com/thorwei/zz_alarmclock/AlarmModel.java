@@ -1,6 +1,8 @@
 package com.thorwei.zz_alarmclock;
 
-public class AlarmModel {
+import java.io.Serializable;
+
+public class AlarmModel implements Serializable {
     public int id;
     public boolean enable;
     public int hour, minute;

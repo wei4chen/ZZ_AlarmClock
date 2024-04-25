@@ -69,32 +69,15 @@ public class SettingAlarmActivity extends AppCompatActivity{
         edittextTeg = (EditText) findViewById(R.id.edittext_teg);
         switchVibration = (Switch) findViewById(R.id.switch_vibration);
 
-        Bundle bundle = getIntent().getBundleExtra("alarmclock");
-        position = bundle.getInt("position");
-        id = bundle.getInt("id");
-        alarmclock = new AlarmClockBuilder().builder(id);
-        alarmclock.id = bundle.getInt("id");
-        alarmclock.enable = bundle.getBoolean("enable");
-        alarmclock.hour = bundle.getInt("hour");
-        alarmclock.minute = bundle.getInt("minute");
-        alarmclock.repeat = bundle.getInt("repeat");
-        alarmclock.tag = bundle.getString("tag");
-        alarmclock.ringPosition = bundle.getInt("ringPosition");
-        alarmclock.ring = bundle.getString("ring");
-        alarmclock.vibrate = bundle.getBoolean("vibrate");
-        alarmclock.remind = bundle.getBoolean("remind");
 
+        position = getIntent().getIntExtra("position",-1);
+        alarmclock = (AlarmModel)getIntent().getSerializableExtra("AlarmModel");
+    }
 
-/*
-        alarmClockLab = new AlarmClockBuilder().builderLab(id);
-        alarmClockLab.setHour(alarmClockLab.hour);
-        alarmClockLab.setMinute(alarmClockLab.minute);
-        alarmClockLab.setRepeat(alarmClockLab.repeat);
-        alarmClockLab.setTag(alarmClockLab.tag);
-        alarmClockLab.setRingPosition(alarmClockLab.ringPosition);
-        alarmClockLab.setRing(alarmClockLab.ring);
-        alarmClockLab.setVibrate(alarmClockLab.vibrate);
-*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         tvHours.setText(String.format("%02d",alarmclock.hour));
         tvMin.setText(String.format("%02d",alarmclock.minute));
         edittextTeg.setText(""+alarmclock.tag);
@@ -102,72 +85,20 @@ public class SettingAlarmActivity extends AppCompatActivity{
         switchVibration.setChecked(alarmclock.vibrate);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-    private String getRepeatString(int repeat) {
-        String remindString = "";
-        if (repeat == 0) {
-            remindString = getString(R.string.alarmRepeatChoice);
-        } else if (repeat == 127) {
-            remindString = getString(R.string.alarmRepeatEveryDay);
-        }
-        return remindString;
-    }
-    private String firstRing(Context context) {
-        RingtoneManager ringtoneManager = new RingtoneManager(context);
-        ringtoneManager.setType(RingtoneManager.TYPE_ALARM);
-        Cursor cursor = ringtoneManager.getCursor();
-        String ringName = null;
-        while (cursor.moveToNext()) {
-            ringName = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
-            if (ringName != null) {
-                break;
-            }
-        }
-        cursor.close();
-        return ringName;
-    }
-    private int[] getCurrentTime() {
-        Calendar time = Calendar.getInstance();
-        int hour = time.get(Calendar.HOUR_OF_DAY);
-        int minute = time.get(Calendar.MINUTE);
-        return new int[]{hour, minute};
-    }
-
     public void AlarmCencel(View view) {
         finish();
-        //onBackPressed();
     }
     public void AlarmDelete(View view) {
-        AlarmManagerHelper.cancelAlarmClock(this, id);
-        AlarmDBUtils.deleteAlarmClock(this, id);
+        AlarmManagerHelper.cancelAlarmClock(this, alarmclock.id);
+        AlarmDBUtils.deleteAlarmClock(this, alarmclock.id);
         finish();
     }
     public void AlarmSave(View view) {
-        Log.e(TAG,"AlarmSave");
-        /*
-        if(edittextTeg.getText() != null && edittextTeg.getText().length() != 0) {
-            //Log.e(TAG,"edittextTeg["+edittextTeg.getText()+"]");
-            alarmClockLab.setTag("" + edittextTeg.getText());
-        }
-        AlarmDBUtils.updateAlarmClock(SettingAlarmActivity.this, alarmClockLab);
-        AlarmModel alarm = AlarmDBUtils.queryAlarmClock(SettingAlarmActivity.this).get(0);
-        if (alarm.enable) {
-            AlarmManagerHelper.startAlarmClock(SettingAlarmActivity.this, alarm);
-        }
-        */
+        //Log.e(TAG,"AlarmSave");
         alarmclock.setTag("" + edittextTeg.getText());
         alarmclock.setRepeat(spnRepeat.getSelectedItemPosition());
         alarmclock.setVibrate(switchVibration.isChecked());
-
-        getIntent().putExtra("position", position);
-        getIntent().putExtra("id", id);
-        getIntent().putExtra("tag", alarmclock.tag);
-        getIntent().putExtra("repeat", alarmclock.repeat);
-        getIntent().putExtra("vibrate", alarmclock.vibrate);
-        setResult(RESULT_OK,getIntent());
+        AlarmDBUtils.updateAlarmClock(this, alarmclock);
         finish();
     }
 }

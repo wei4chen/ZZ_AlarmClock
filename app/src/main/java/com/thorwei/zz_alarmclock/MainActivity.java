@@ -88,31 +88,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void settingAlarm(int position) {
         Intent intent = new Intent(this, SettingAlarmActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("position",position);
-        bundle.putInt("id",alarmList.get(position).id);
-        bundle.putBoolean("enable",alarmList.get(position).enable);
-        bundle.putInt("hour",alarmList.get(position).hour);
-        bundle.putInt("minute",alarmList.get(position).minute);
-        bundle.putInt("repeat",alarmList.get(position).repeat);
-        bundle.putString("tag",alarmList.get(position).tag);
-        bundle.putInt("ringPosition",alarmList.get(position).ringPosition);
-        bundle.putString("ring",alarmList.get(position).ring);
-        bundle.putBoolean("vibrate",alarmList.get(position).vibrate);
-        bundle.putBoolean("remind",alarmList.get(position).remind);
-        //intent.putExtra("id", alarmList.get(position).id);
-
-        intent.putExtra("alarmclock", bundle);
-        //startActivity(intent);
+        intent.putExtra("position", position);
+        intent.putExtra("AlarmModel", alarmList.get(position));
         startActivityForResult(intent, 1);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1) {
             if (resultCode == RESULT_OK){
                 int position = data.getIntExtra("position", -1);
+                if(position >= 0) {
+
+                    final AlarmModel bufAlarm = (AlarmModel)data.getSerializableExtra("AlarmModel");
+                    AlarmDBUtils.updateAlarmClock(this, bufAlarm);
+                    alarmList = AlarmDBUtils.queryAlarmClock(this);
+                    alarmAdapter.setData(alarmList);
+
+                    /*
+                    AlarmModel bufAlarmM = (AlarmModel)data.getSerializableExtra("AlarmModel");
+                    Log.e(TAG,"id["+bufAlarmM.id+"] tag["+bufAlarmM.tag+"]repeat["+bufAlarmM.repeat+"]vibrate["+bufAlarmM.vibrate+"]");
+                    final AlarmModel bufAlarm = alarmList.get(position);
+                    bufAlarm.tag = bufAlarmM.tag;
+                    bufAlarm.repeat = bufAlarmM.repeat;
+                    bufAlarm.vibrate = bufAlarmM.vibrate;
+                    AlarmDBUtils.updateAlarmClock(this, bufAlarm);
+                    alarmList = AlarmDBUtils.queryAlarmClock(this);
+                    alarmAdapter.setData(alarmList);
+*/
+                }
+/*
                 int id = data.getIntExtra("id", 0);
                 String tag = data.getStringExtra("tag");
                 int repeat = data.getIntExtra("repeat", 0);
@@ -129,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
                     alarmList = AlarmDBUtils.queryAlarmClock(this);
                     alarmAdapter.setData(alarmList);
                 }
+
+ */
             }
         }
     }
