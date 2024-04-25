@@ -1,10 +1,14 @@
 package com.thorwei.zz_alarmclock;
 
+import static com.thorwei.zz_alarmclock.MainActivity.TAG;
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import java.util.List;
@@ -12,11 +16,11 @@ import java.util.List;
 public class AlarmAdapter extends BaseAdapter {
 
     private LayoutInflater listlayoutInflater;
-    private MainActivity mm;
+    private Context mContext;
     private List<AlarmModel> mList;
 
     public AlarmAdapter(Context c, List<AlarmModel> list) {
-        mm = (MainActivity) c;
+        mContext = c;
         mList = list;
         listlayoutInflater = LayoutInflater.from(c);
     }
@@ -25,15 +29,15 @@ public class AlarmAdapter extends BaseAdapter {
         mList = list;
         notifyDataSetChanged();
     }
-
     @Override
     public int getCount() {
-        return mm.TabTimes.length;
+        return mList != null ? mList.size() : 0;
+        //return mm.TabTimes.length;
     }
 
     @Override
     public Object getItem(int position) {
-        return mm.TabTimes[position];
+        return mList.get(position);
     }
 
     @Override
@@ -49,10 +53,29 @@ public class AlarmAdapter extends BaseAdapter {
         TextView alarmlistTag = (TextView) convertView.findViewById(R.id.alarmlist_tag);
         Switch alarmlistSwitch = (Switch) convertView.findViewById(R.id.alarmlist_switch);
 
-        alarmlistTime.setText(mm.TabTimes[position]);
-        alarmlistTag.setText(mm.TabTags[position]);
-        alarmlistSwitch.setChecked(mm.TabEnbale[position]);
+        final AlarmModel bufAlarm = mList.get(position);
+
+        String strTime = String.format("%02d:%02d", bufAlarm.hour, bufAlarm.minute);
+        alarmlistTime.setText(strTime);
+        alarmlistTag.setText(bufAlarm.tag);
+        alarmlistSwitch.setChecked(bufAlarm.enable);
+        alarmlistSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                bufAlarm.setEnable(isChecked);
+                if (isChecked) {
+                    AlarmManagerHelper.startAlarmClock(mContext, bufAlarm);
+                } else {
+                    AlarmManagerHelper.cancelAlarmClock(mContext, bufAlarm.id);
+                }
+                AlarmDBUtils.updateAlarmClock(mContext, bufAlarm);
+            }
+        });
+
 
         return convertView;
     }
+
+
+
 }

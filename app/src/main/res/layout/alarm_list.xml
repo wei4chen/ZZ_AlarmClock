@@ -3,7 +3,8 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:descendantFocusability="blocksDescendants">
 
     <androidx.cardview.widget.CardView
         app:cardElevation="4dp"
@@ -14,7 +15,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
-        android:clickable="true"
         app:cardBackgroundColor="@color/cardview_dark_background">
 
         <LinearLayout
@@ -60,6 +60,7 @@
                     android:textColor="@color/white"
                     android:gravity="center_vertical"
                     android:autoSizeTextType="uniform"
+                    android:layout_marginStart="10dp"
                     android:layout_weight="4"/>
 
             </LinearLayout>

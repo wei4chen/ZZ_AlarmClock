@@ -14,17 +14,18 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tvSetting"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/bar_setting"
             android:gravity="center"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="invisible"/>
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="6"

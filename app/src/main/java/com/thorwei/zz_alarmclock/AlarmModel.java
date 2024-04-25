@@ -43,7 +43,7 @@ public class AlarmModel {
         this.repeat = repeat;
     }
     
-    public void setTag(String tah) {
+    public void setTag(String tag) {
         this.tag = tag;
     }
 

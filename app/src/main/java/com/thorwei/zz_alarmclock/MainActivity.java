@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_DOWN)
                 {
+                    Log.e(TAG,"Touch+ Down");
                     addAlarm(v);
                     return true;
                 }
@@ -59,19 +62,107 @@ public class MainActivity extends AppCompatActivity {
         alarmAdapter = new AlarmAdapter(this, alarmList);
         //listlayoutadapter adaAlarms = new listlayoutadapter(this);
         alarmListView.setAdapter(alarmAdapter);
+
+        alarmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, ""+alarmList.get(position).id,Toast.LENGTH_SHORT).show();
+
+                settingAlarm(position);
+            }
+        });
+
     }
 
     public void addAlarm(View view) {
         Intent intent = new Intent(this, AddAlarmActivity.class);
         startActivity(intent);
+/*
+        Log.e(TAG,"addAlarm");
+        Intent intent = new Intent(MainActivity.this, ZZTestActivity.class);
+        Log.e(TAG,"addAlarm1");
+        startActivity(intent);
+        Log.e(TAG,"addAlarm2");
+*/
+    }
+
+    public void settingAlarm(int position) {
+        Intent intent = new Intent(this, SettingAlarmActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("position",position);
+        bundle.putInt("id",alarmList.get(position).id);
+        bundle.putBoolean("enable",alarmList.get(position).enable);
+        bundle.putInt("hour",alarmList.get(position).hour);
+        bundle.putInt("minute",alarmList.get(position).minute);
+        bundle.putInt("repeat",alarmList.get(position).repeat);
+        bundle.putString("tag",alarmList.get(position).tag);
+        bundle.putInt("ringPosition",alarmList.get(position).ringPosition);
+        bundle.putString("ring",alarmList.get(position).ring);
+        bundle.putBoolean("vibrate",alarmList.get(position).vibrate);
+        bundle.putBoolean("remind",alarmList.get(position).remind);
+        //intent.putExtra("id", alarmList.get(position).id);
+
+        intent.putExtra("alarmclock", bundle);
+        //startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1) {
+            if (resultCode == RESULT_OK){
+                int position = data.getIntExtra("position", -1);
+                int id = data.getIntExtra("id", 0);
+                String tag = data.getStringExtra("tag");
+                int repeat = data.getIntExtra("repeat", 0);
+                boolean vibrate = data.getBooleanExtra("vibrate", false);
+                Log.e(TAG,"position["+position+"]id["+id+"] tag["+tag+"]repeat["+repeat+"]vibrate["+vibrate+"]");
+
+                if(position >= 0) {
+                    Log.e(TAG,"updateAlarmClock");
+                    final AlarmModel bufAlarm = alarmList.get(position);
+                    bufAlarm.tag = tag;
+                    bufAlarm.repeat = repeat;
+                    bufAlarm.vibrate = vibrate;
+                    AlarmDBUtils.updateAlarmClock(this, bufAlarm);
+                    alarmList = AlarmDBUtils.queryAlarmClock(this);
+                    alarmAdapter.setData(alarmList);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG,"onStart");
+        super.onStart();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         Log.d(TAG,"onResume");
+        super.onResume();
         alarmList = AlarmDBUtils.queryAlarmClock(this);
         alarmAdapter.setData(alarmList);
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG,"onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG,"onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG,"onDestroy");
+        super.onDestroy();
     }
 
     private void initDB() {

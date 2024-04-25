@@ -71,7 +71,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/alarm_cv_tag"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
@@ -82,27 +82,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/tag_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="25dp"
-                            android:fontFamily="monospace"
-                            android:text="@string/alarmTextTag"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="20sp"/>
-
-
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tag_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="25dp"
+                        android:fontFamily="monospace"
+                        android:text="@string/alarmTextTag"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="20sp"/>
 
                     <EditText
-                        android:id="@+id/editTextText"
+                        android:id="@+id/edittext_teg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -111,7 +104,7 @@
                         android:ems="10"
                         android:inputType="text"
                         android:gravity="end"
-                        android:text="@string/bar_name" />
+                        android:hint="@string/bar_name" />
 
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
@@ -120,7 +113,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/alarm_cv_repeat"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:layout_below="@+id/alarm_cv_tag"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
@@ -145,16 +138,15 @@
                         android:text="@string/alarmRepeat"
                         android:textColor="@color/colorWhite"
                         android:textSize="20sp"/>
-
-                    <TextView
-                        android:id="@+id/repeat_content"
+                    <Spinner
+                        android:id="@+id/spinner_repeat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="25dp"
                         android:fontFamily="monospace"
-                        android:text="@string/alarmRepeatChoice"
+                        android:entries="@array/spnRepeat"
                         android:textColor="@color/colorRed_500"
                         android:textSize="18sp"/>
 
@@ -165,7 +157,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/alarm_cv_ring"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:layout_below="@+id/alarm_cv_repeat"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
@@ -208,7 +200,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/alarm_cv_vibration"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:layout_below="@+id/alarm_cv_ring"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
@@ -247,7 +239,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/alarm_cv_remind"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:layout_below="@+id/alarm_cv_vibration"
                 android:layout_marginBottom="64dp"
                 android:layout_marginLeft="8dp"
@@ -255,6 +247,7 @@
                 android:layout_marginTop="8dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/cardview_dark_background"
                 app:cardElevation="4dp">
 
@@ -296,7 +289,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/floating_action_btn0"
+            android:id="@+id/btn_cencel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -304,10 +297,11 @@
             android:textColor="@color/colorWhite"
             android:backgroundTint="@color/black"
             android:text="@string/buttonCancel"
+            android:onClick="AlarmCencel"
             />
 
         <Button
-            android:id="@+id/floating_action_btn1"
+            android:id="@+id/btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -315,10 +309,11 @@
             android:textColor="@color/black"
             android:backgroundTint="@color/colorRed_500"
             android:text="@string/buttonDelect"
+            android:onClick="AlarmDelete"
             />
 
         <Button
-            android:id="@+id/floating_action_btn2"
+            android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -326,6 +321,7 @@
             android:textColor="@color/colorWhite"
             android:backgroundTint="@color/black"
             android:text="@string/buttonSave"
+            android:onClick="AlarmSave"
             />
     </LinearLayout>
 
