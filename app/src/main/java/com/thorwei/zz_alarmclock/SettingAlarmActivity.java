@@ -24,27 +24,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class SettingAlarmActivity extends AppCompatActivity{
-
-    TextView toolbarTitle;
-    CardView cvRepeat;
-    TextView tvRepeat;
-    CardView cvRing;
-    TextView tvRingtones;
-    CardView cvRemind;
-    TextView tvRemind;
     Switch switchVibration;
     EditText edittextTeg;
     Button btnCencel, btnDelete, btnSave;
-
     Spinner spnRepeat;
     public static TextView tvHours;
     public static TextView tvMin;
-
-    private static AlarmClockLab alarmClockLab;
-
-    private static final String ALARM_ID = "id";
-    private int position, id;
-    private List<AlarmModel> alarmList;
     private AlarmModel alarmclock;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,8 +54,6 @@ public class SettingAlarmActivity extends AppCompatActivity{
         edittextTeg = (EditText) findViewById(R.id.edittext_teg);
         switchVibration = (Switch) findViewById(R.id.switch_vibration);
 
-
-        position = getIntent().getIntExtra("position",-1);
         alarmclock = (AlarmModel)getIntent().getSerializableExtra("AlarmModel");
     }
 
