@@ -1,11 +1,14 @@
 package com.thorwei.zz_alarmclock;
 
+import static com.thorwei.zz_alarmclock.MainActivity.TAG;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -14,60 +17,26 @@ public class AlarmManagerHelper {
     public static final String ALARM_CLOCK = "alarm_clock";
     
     public static void startAlarmClock(Context context, AlarmModel alarm) {
-        /*
+        Log.e(TAG,"startAlarmClock:"+alarm.id);
         Intent intent = new Intent(context, BootAlarmActivity.class);
-        intent.putExtra(ALARM_CLOCK, (CharSequence) alarm);
-        PendingIntent pi = PendingIntent.getActivity(context, alarm.id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        intent.putExtra(ALARM_CLOCK, alarm);
+        PendingIntent pi = PendingIntent.getActivity(context, alarm.id, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        long nextTime = calculateNextTime(alarm.hour,
-                alarm.minute, getWeeks(alarm));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextTime, pi);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, nextTime, pi);
-        }
-        */
-    }
-    
+        long nextTime = calculateNextTime(alarm.hour, alarm.minute, alarm.repeat);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextTime, pi);
 
-    private static String getWeeks(AlarmModel alarm) {
-        StringBuilder weekBuilder = new StringBuilder();
-        if ((alarm.repeat & 0x1<<0) != 0) {
-            weekBuilder.append("1,");
-        }
-        if ((alarm.repeat & 0x1<<1) != 0) {
-            weekBuilder.append("2,");
-        }
-        if ((alarm.repeat & 0x1<<2) != 0) {
-            weekBuilder.append("3,");
-        }
-        if ((alarm.repeat & 0x1<<3) != 0) {
-            weekBuilder.append("4,");
-        }
-        if ((alarm.repeat & 0x1<<4) != 0) {
-            weekBuilder.append("5,");
-        }
-        if ((alarm.repeat & 0x1<<5) != 0) {
-            weekBuilder.append("6,");
-        }
-        if ((alarm.repeat & 0x1<<6) != 0) {
-            weekBuilder.append("7,");
-        }
-        String week = weekBuilder.toString();
-        try {
-            week.substring(0, week.length() - 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (week == "") {
-            week = null;
-        }
-        return week;
+/*
+        Intent intent = new Intent(context, BootAlarmActivity.class );
+        PendingIntent pi = PendingIntent.getActivity(context, alarm.id, intent, PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+        long time = System.currentTimeMillis()+5*1000;
+        manager.set(AlarmManager.RTC_WAKEUP,time,pi);
+ */
     }
 
-    public static long calculateNextTime(int hour, int minute, String weeks) {
-
+    public static long calculateNextTime(int hour, int minute, int repeat) {
         long now = System.currentTimeMillis();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(now);
@@ -75,11 +44,17 @@ public class AlarmManagerHelper {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-
         long nextTime = calendar.getTimeInMillis();
 
-        if (weeks == null) {
-
+        if (nextTime > now) {
+            return nextTime;
+        } else {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            nextTime = calendar.getTimeInMillis();
+            return nextTime;
+        }
+        /*
+        if(repeat == 0) {
             if (nextTime > now) {
                 return nextTime;
             } else {
@@ -90,32 +65,31 @@ public class AlarmManagerHelper {
         } else {
             nextTime = 0;
             long tempTime;
-            final String[] weeksValue = weeks.split(",");
-            for (String aWeeksValue : weeksValue) {
-                int week = Integer.parseInt(aWeeksValue);
-                calendar.set(Calendar.DAY_OF_WEEK, week);
+            for (int i = 0; i < 7; i++){
+                if((repeat & 0x1<<i) != 0)
+                    calendar.set(Calendar.DAY_OF_WEEK, i+1);
                 tempTime = calendar.getTimeInMillis();
 
                 if (tempTime <= now) {
                     tempTime += AlarmManager.INTERVAL_DAY * 7;
                 }
+
                 if (nextTime == 0) {
                     nextTime = tempTime;
                 } else {
                     nextTime = Math.min(tempTime, nextTime);
                 }
-
             }
             return nextTime;
         }
+        */
     }
 
-    public static void cancelAlarmClock(Context context, int alarmClockCode) {
+    public static void cancelAlarmClock(Context context, int alarmClockId) {
+        Log.e(TAG,"cancelAlarmClock:"+alarmClockId);
         Intent intent = new Intent(context, BootAlarmActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(context, alarmClockCode,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) context
-                .getSystemService(Activity.ALARM_SERVICE);
+        PendingIntent pi = PendingIntent.getActivity(context, alarmClockId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager am = (AlarmManager)context.getSystemService(Activity.ALARM_SERVICE);
         am.cancel(pi);
     }
     

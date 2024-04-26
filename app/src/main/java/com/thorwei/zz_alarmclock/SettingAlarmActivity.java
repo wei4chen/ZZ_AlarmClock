@@ -88,6 +88,9 @@ public class SettingAlarmActivity extends AppCompatActivity{
         alarmclock.setRepeat(spnRepeat.getSelectedItemPosition());
         alarmclock.setVibrate(switchVibration.isChecked());
         AlarmDBUtils.updateAlarmClock(this, alarmclock);
+        if (alarmclock.enable) {
+            AlarmManagerHelper.startAlarmClock(this, alarmclock);
+        }
         finish();
     }
 
