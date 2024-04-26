@@ -5,6 +5,7 @@ import static com.thorwei.zz_alarmclock.MainActivity.TAG;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -32,10 +33,14 @@ public class SettingAlarmActivity extends AppCompatActivity{
     Switch switchVibration;
     EditText edittextTeg;
     Button btnCencel, btnDelete, btnSave;
+    TextView RingName;
     Spinner spnRepeat;
     public static TextView tvHours;
     public static TextView tvMin;
     private static AlarmModel alarmclock;
+
+    //private static AlarmClockLab alarmClockLab;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Log.e(TAG,"onCreate SettingAlarmActivity");
@@ -51,27 +56,27 @@ public class SettingAlarmActivity extends AppCompatActivity{
 
         btnCencel = (Button) findViewById(R.id.btn_cencel);
         btnDelete = (Button) findViewById(R.id.btn_delete);
-        btnSave = (Button) findViewById(R.id.btn_save);
-
         btnDelete.setVisibility(View.VISIBLE);
-
+        btnSave = (Button) findViewById(R.id.btn_save);
+        RingName = (TextView) findViewById(R.id.ringtones_name);
         spnRepeat = (Spinner) findViewById(R.id.spinner_repeat);
         edittextTeg = (EditText) findViewById(R.id.edittext_teg);
         switchVibration = (Switch) findViewById(R.id.switch_vibration);
 
         alarmclock = (AlarmModel)getIntent().getSerializableExtra("AlarmModel");
+        //alarmClockLab = new AlarmClockBuilder().builderLab(alarmclock.id);
 
         tvHours.setText(String.format("%02d",alarmclock.hour));
         tvMin.setText(String.format("%02d",alarmclock.minute));
         edittextTeg.setText(""+alarmclock.tag);
         spnRepeat.setSelection(alarmclock.repeat);
         switchVibration.setChecked(alarmclock.vibrate);
+        RingName.setText(alarmclock.ring);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     public void AlarmCencel(View view) {
@@ -94,12 +99,28 @@ public class SettingAlarmActivity extends AppCompatActivity{
         finish();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                alarmclock.ringPosition = data.getIntExtra("position", 0);
+                alarmclock.ring = data.getStringExtra("ring");
+                RingName.setText(alarmclock.ring);
+            }
+        }
+    }
+
+    public void OnRingClick(View view) {
+        Intent intent = new Intent(this, RingActivity.class);
+        //startActivity(intent);
+        startActivityForResult(intent, 1);
+    }
     public void OnTimeClick(View view) {
         //Log.e(TAG,"OnTimeClick");
         DialogFragment dialogFragment = new TimePickerFragment();
         dialogFragment.show(getSupportFragmentManager(), "timePicker");
     }
-
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
         public TimePickerFragment() {
         }

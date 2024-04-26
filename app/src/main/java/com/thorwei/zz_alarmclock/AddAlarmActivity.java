@@ -37,6 +37,7 @@ public class AddAlarmActivity extends AppCompatActivity{
     Switch switchVibration;
     EditText edittextTeg;
     Button btnCencel, btnDelete, btnSave;
+    TextView RingName;
     Spinner spnRepeat;
     public static TextView tvHours;
     public static TextView tvMin;
@@ -58,7 +59,7 @@ public class AddAlarmActivity extends AppCompatActivity{
         btnDelete = (Button) findViewById(R.id.btn_delete);
         btnDelete.setVisibility(View.INVISIBLE);
         btnSave = (Button) findViewById(R.id.btn_save);
-
+        RingName = (TextView) findViewById(R.id.ringtones_name);
         spnRepeat = (Spinner) findViewById(R.id.spinner_repeat);
         edittextTeg = (EditText) findViewById(R.id.edittext_teg);
         switchVibration = (Switch) findViewById(R.id.switch_vibration);
@@ -85,6 +86,7 @@ public class AddAlarmActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        RingName.setText(alarmClockLab.ring);
     }
     private String getRepeatString(int repeat) {
         String remindString = "";
@@ -140,13 +142,16 @@ public class AddAlarmActivity extends AppCompatActivity{
         finish();
     }
 
+    public void OnRingClick(View view) {
+        Intent intent = new Intent(this, RingActivity.class);
+        startActivity(intent);
+    }
+
     public void OnTimeClick(View view) {
         //Log.e(TAG,"OnTimeClick");
         DialogFragment dialogFragment = new TimePickerFragment();
         dialogFragment.show(getSupportFragmentManager(), "timePicker");
     }
-
-
     public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
         public TimePickerFragment() {
         }

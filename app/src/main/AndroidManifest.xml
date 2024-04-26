@@ -32,6 +32,7 @@
         <activity android:name=".AddAlarmActivity"/>
         <activity android:name=".SettingAlarmActivity"/>
         <activity android:name=".BootAlarmActivity"/>
+        <activity android:name=".RingActivity"/>
 
         <receiver
             android:name=".AlarmClockReceiver"
