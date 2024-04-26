@@ -6,13 +6,16 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class BootAlarmActivity extends AppCompatActivity {
     public static final String ALARM_CLOCK = "alarm_clock";
@@ -23,10 +26,16 @@ public class BootAlarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_boot_alarm);
+
 
         alarm = (AlarmModel) getIntent().getSerializableExtra(ALARM_CLOCK);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        TextView tv_tag = (TextView)findViewById(R.id.tv_tag);
+        tv_tag.setText(alarm.tag);
 
         rvAlarmOff = (RelativeLayout)findViewById(R.id.rl_boot_alarm_off);
 

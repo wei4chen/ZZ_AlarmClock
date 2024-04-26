@@ -10,9 +10,12 @@ import android.util.Log;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.e(TAG,"onReceive");
+        /*
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            Log.e(TAG,"onReceive");
             context.startService(new Intent(context, AlarmClockService.class));
         }
+
+         */
     }
 }

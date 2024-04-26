@@ -18,40 +18,17 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_location"
+                android:id="@+id/tv_tag"
+                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="48dp"
+                android:layout_centerHorizontal="true"
                 android:fontFamily="monospace"
                 android:textColor="@color/colorWhite"
-                android:textSize="20dp"/>
-
-            <TextView
-                android:id="@+id/tv_condition"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="78dp"
-                android:fontFamily="monospace"
-                android:textColor="@color/colorWhite"
-                android:textSize="20dp"/>
-
-            <TextView
-                android:id="@+id/tv_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="108dp"
-                android:fontFamily="monospace"
-                android:textColor="@color/colorWhite"
-                android:textSize="30dp"/>
+                android:textSize="40dp" />
 
             <TextClock
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="60dp"
                 android:id="@+id/tv_boot_time"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"

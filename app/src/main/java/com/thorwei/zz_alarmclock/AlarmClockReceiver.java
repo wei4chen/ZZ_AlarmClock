@@ -11,14 +11,15 @@ public class AlarmClockReceiver extends BroadcastReceiver{
     public static final String ALARM_CLOCK = "alarm_clock";
 
     public AlarmClockReceiver() {
+        Log.d(MainActivity.TAG, "AlarmClockReceiver");
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(MainActivity.TAG, "onReceive");
         Intent bootIntent = new Intent(context, BootAlarmActivity.class);
         bootIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-        bootIntent.putExtra(ALARM_CLOCK, intent.getSerializableExtra(ALARM_CLOCK));
-        Log.d(MainActivity.TAG, "AlarmClockReceiver");
+        bootIntent.putExtra(ALARM_CLOCK, (AlarmModel)intent.getSerializableExtra(ALARM_CLOCK));
         context.startActivity(bootIntent);
     }
 }

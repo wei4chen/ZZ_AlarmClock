@@ -17,6 +17,7 @@ public class AlarmManagerHelper {
     public static final String ALARM_CLOCK = "alarm_clock";
     
     public static void startAlarmClock(Context context, AlarmModel alarm) {
+
         Log.e(TAG,"startAlarmClock:"+alarm.id);
         Intent intent = new Intent(context, BootAlarmActivity.class);
         intent.putExtra(ALARM_CLOCK, alarm);
@@ -27,13 +28,15 @@ public class AlarmManagerHelper {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextTime, pi);
 
 /*
+        Log.e(TAG,"startAlarmClock:"+alarm.id);
         Intent intent = new Intent(context, BootAlarmActivity.class );
+        intent.putExtra(ALARM_CLOCK, alarm);
         PendingIntent pi = PendingIntent.getActivity(context, alarm.id, intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager manager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         long time = System.currentTimeMillis()+5*1000;
-        manager.set(AlarmManager.RTC_WAKEUP,time,pi);
- */
+        manager.setExact(AlarmManager.RTC_WAKEUP,time,pi);
+*/
     }
 
     public static long calculateNextTime(int hour, int minute, int repeat) {

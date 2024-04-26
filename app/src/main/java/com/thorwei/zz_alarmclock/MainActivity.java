@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        startService(new Intent(this, AlarmClockService.class));
     }
 
     public void addAlarm(View view) {

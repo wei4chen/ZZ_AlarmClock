@@ -1,5 +1,6 @@
 package com.thorwei.zz_alarmclock;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 
+import androidx.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,29 +20,18 @@ import java.util.List;
 
 public class AlarmClockService extends Service{
     private List<AlarmModel> alarmList;
-    public static final String ONLY_ONCE = "Only once";
-    private AlarmBinder alarmBinder;
 
-    public AlarmClockService() {
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
-	@Override
-    public IBinder onBind(Intent intent) {
-        return alarmBinder;
-	}
-	
     @Override
     public void onCreate() {
         super.onCreate();
-        run(this, AlarmClockReceiver.class, 60);
+    //    run(this, AlarmClockReceiver.class, 60);
         startTimeTask();
     }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
-    }
-
     private void startTimeTask() {
         new Thread(new Runnable() {
             @Override
@@ -54,18 +46,6 @@ public class AlarmClockService extends Service{
         }).start();
     }
 
-    private class AlarmBinder extends Binder {
-        public void setAlarmClock(AlarmClockLab alarmClockLab) {
-        }
-    }
-
-    private int getFlag(AlarmModel alarm) {
-        if (alarm.repeat == 0) {
-            return 0;
-        } else {
-            return 2;
-        }
-    }
 //=====================================================================   
     public static void run(final Context context, final Class<?> daemonServiceClazz, final int interval) {
         new Thread(new Runnable() {
@@ -135,6 +115,7 @@ public class AlarmClockService extends Service{
         public void onCreate() {
             super.onCreate();
         }
+        @SuppressLint("ForegroundServiceType")
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
             startForeground(-1001, new Notification());
