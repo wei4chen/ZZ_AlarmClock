@@ -77,15 +77,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:visibility="gone"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true">
 
-            <Button
+            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/alarm_check"/>
 
         </RelativeLayout>
 
@@ -97,12 +99,13 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true">
 
-            <Button
+            <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/alarm_off"/>
 
         </RelativeLayout>
     </LinearLayout>

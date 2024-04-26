@@ -33,7 +33,25 @@
         <activity android:name=".SettingAlarmActivity"/>
         <activity android:name=".BootAlarmActivity"/>
 
+        <receiver
+            android:name=".AlarmClockReceiver"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
 
+        <service
+            android:name=".AlarmClockService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 
