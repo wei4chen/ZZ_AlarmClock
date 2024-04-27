@@ -1,5 +1,8 @@
 package com.thorwei.zz_alarmclock;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -21,7 +24,7 @@ import java.util.Objects;
 public class BootAlarmActivity extends AppCompatActivity {
     public final String TAG = "weitest";
     public static final String ALARM_CLOCK = "alarm_clock";
-    RelativeLayout rvAlarmOff;
+    RelativeLayout rlAlarmOff, rlRemind;
     private AlarmModel alarm;
     private MediaPlayer mediaPlayer;
     private Vibrator vibration;
@@ -39,13 +42,38 @@ public class BootAlarmActivity extends AppCompatActivity {
         TextView tv_tag = (TextView)findViewById(R.id.tv_tag);
         tv_tag.setText(alarm.tag);
 
-        rvAlarmOff = (RelativeLayout)findViewById(R.id.rl_boot_alarm_off);
+        rlRemind = (RelativeLayout)findViewById(R.id.rl_boot_remind);
+        rlAlarmOff = (RelativeLayout)findViewById(R.id.rl_boot_alarm_off);
 
         startPlayingRing();
         if (alarm.vibrate) {
             startVibrate();
         }
-        rvAlarmOff.setOnClickListener(new View.OnClickListener() {
+        if(alarm.remind) {
+            rlRemind.setVisibility(View.VISIBLE);
+            rlRemind.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //AlarmManagerHelper.remindAlarmClock(BootAlarmActivity.this, alarm);
+                    stopPlayRing();
+                    if (alarm.vibrate) {
+                        stopVibrate();
+                    }
+                    long nextTime = System.currentTimeMillis() + 1000 * 60 * 1;
+                    Intent intent = new Intent(BootAlarmActivity.this, BootAlarmActivity.class);
+                    intent.putExtra(ALARM_CLOCK, alarm);
+                    PendingIntent pi = PendingIntent.getActivity(BootAlarmActivity.this, alarm.id, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    AlarmManager alarmManager = (AlarmManager) BootAlarmActivity.this.getSystemService(ALARM_SERVICE);
+
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextTime, pi);
+                    Log.d("weitest", nextTime + "");
+                    finish();
+                }
+            });
+        } else {
+            rlRemind.setVisibility(View.GONE);
+        }
+        rlAlarmOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (alarm.repeat==0) {

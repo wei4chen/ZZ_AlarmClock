@@ -27,6 +27,7 @@ public class AlarmModel implements Serializable {
         this.ringPosition = builder.ringPosition;
         this.ring = builder.ring;
         this.vibrate = builder.vibrate;
+        this.remind = builder.remind;
     }
 
     public void setEnable(boolean enable) {

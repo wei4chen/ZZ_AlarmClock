@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 //import com.softmiracle.weatheralarmclock.alarm.AlarmClockBuilder;
 
@@ -13,9 +14,10 @@ import java.util.List;
 
 public class AlarmDBUtils {
     public static final String DB_NAME = "AlarmClock.db";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
     
     public static SQLiteDatabase openAlarmClock(Context context) {
+        Log.e("weitest", "openAlarmClock");
         AlarmDBHelper alarmDBHelper = new AlarmDBHelper(context, DB_NAME, null, DB_VERSION);
         return alarmDBHelper.getWritableDatabase();
     }
@@ -30,6 +32,7 @@ public class AlarmDBUtils {
         contentValues.put("RING_POSITION", alarm.ringPosition);
         contentValues.put("RING", alarm.ring);
         contentValues.put("VIBRATE", alarm.vibrate);
+        contentValues.put("REMIND", alarm.remind);
         return contentValues;
     }
 
@@ -65,6 +68,7 @@ public class AlarmDBUtils {
                     .ringPosition(cursor.getInt(cursor.getColumnIndex("RING_POSITION")))
                     .ring(cursor.getString(cursor.getColumnIndex("RING")))
                     .vibrate(valueOf(cursor.getInt(cursor.getColumnIndex("VIBRATE"))))
+                    .remind(valueOf(cursor.getInt(cursor.getColumnIndex("REMIND"))))
                     .builder(cursor.getInt(cursor.getColumnIndex("ID")));
             alarmList.add(alarm);
         }

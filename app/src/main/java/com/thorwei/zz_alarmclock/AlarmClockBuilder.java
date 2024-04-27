@@ -8,6 +8,7 @@ public class AlarmClockBuilder {
     public int ringPosition;
     public String ring;
     public boolean vibrate;
+    public boolean remind;
 
     public AlarmClockBuilder() {
     }
@@ -50,6 +51,10 @@ public class AlarmClockBuilder {
 
     public AlarmClockBuilder vibrate(boolean vibrate) {
         this.vibrate = vibrate;
+        return this;
+    }
+    public AlarmClockBuilder remind(boolean remind) {
+        this.remind = remind;
         return this;
     }
 

@@ -55,6 +55,18 @@ public class AlarmManagerHelper {
 */
     }
 
+    public static void remindAlarmClock(Context context, AlarmModel alarm) {
+        Log.e(TAG,"remindAlarmClock:"+alarm.id);
+        Intent intent = new Intent(context, BootAlarmActivity.class);
+        intent.putExtra(ALARM_CLOCK, alarm);
+        PendingIntent pi = PendingIntent.getActivity(context, alarm.id, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        long nextTime = calculateRemindTime();
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, nextTime, pi);
+    }
+
+
     public static void add_alarm(Context context, Calendar cal) {
         Log.d(TAG, "alarm add time: " + String.valueOf(cal.get(Calendar.MONTH)) + "." + String.valueOf(cal.get(Calendar.DATE)) + " " + String.valueOf(cal.get(Calendar.HOUR_OF_DAY)) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND));
 
@@ -72,6 +84,12 @@ public class AlarmManagerHelper {
         am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis()+1000, pi);       //註冊鬧鐘
     }
 
+    public static long calculateRemindTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        return calendar.getTimeInMillis();
+    }
 
     public static long calculateNextTime(int hour, int minute, int repeat) {
         long now = System.currentTimeMillis();
@@ -83,6 +101,7 @@ public class AlarmManagerHelper {
         calendar.set(Calendar.MILLISECOND, 0);
         long nextTime = calendar.getTimeInMillis();
 
+        /*
         if (nextTime > now) {
             return nextTime;
         } else {
@@ -90,7 +109,7 @@ public class AlarmManagerHelper {
             nextTime = calendar.getTimeInMillis();
             return nextTime;
         }
-        /*
+         */
         if(repeat == 0) {
             if (nextTime > now) {
                 return nextTime;
@@ -102,9 +121,9 @@ public class AlarmManagerHelper {
         } else {
             nextTime = 0;
             long tempTime;
-            for (int i = 0; i < 7; i++){
-                if((repeat & 0x1<<i) != 0)
-                    calendar.set(Calendar.DAY_OF_WEEK, i+1);
+            for (int i = 0; i < 7; i++) {
+                if ((repeat & 0x1 << i) != 0)
+                    calendar.set(Calendar.DAY_OF_WEEK, i + 1);
                 tempTime = calendar.getTimeInMillis();
 
                 if (tempTime <= now) {
@@ -119,7 +138,6 @@ public class AlarmManagerHelper {
             }
             return nextTime;
         }
-        */
     }
 
     public static void cancelAlarmClock(Context context, int alarmClockId) {

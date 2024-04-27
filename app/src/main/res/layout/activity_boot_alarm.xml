@@ -50,7 +50,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:id="@+id/rl_boot_put_off"
+            android:id="@+id/rl_boot_remind"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
