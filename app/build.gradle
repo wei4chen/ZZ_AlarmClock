@@ -15,6 +15,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    android.applicationVariants.all{ variant ->
+        variant.outputs.all {
+            outputFileName = "ZZ_AlarmClock.apk"
+        }
+    }
 
     buildTypes {
         release {
