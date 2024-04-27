@@ -6,6 +6,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class BootAlarmActivity extends AppCompatActivity {
+    public final String TAG = "weitest";
     public static final String ALARM_CLOCK = "alarm_clock";
     RelativeLayout rvAlarmOff;
     private AlarmModel alarm;
@@ -25,11 +27,11 @@ public class BootAlarmActivity extends AppCompatActivity {
     private Vibrator vibration;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e(TAG,"BootAlarmActivity_onCreate");
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_boot_alarm);
-
 
         alarm = (AlarmModel) getIntent().getSerializableExtra(ALARM_CLOCK);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);

@@ -29,7 +29,7 @@ public class AlarmClockService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-    //    run(this, AlarmClockReceiver.class, 60);
+        run(this, AlarmClockReceiver.class, 60);
         startTimeTask();
     }
     private void startTimeTask() {
