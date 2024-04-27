@@ -59,7 +59,7 @@ public class BootAlarmActivity extends AppCompatActivity {
                     if (alarm.vibrate) {
                         stopVibrate();
                     }
-                    long nextTime = System.currentTimeMillis() + 1000 * 60 * 1;
+                    long nextTime = System.currentTimeMillis() + 1000 * 60 * 5;
                     Intent intent = new Intent(BootAlarmActivity.this, BootAlarmActivity.class);
                     intent.putExtra(ALARM_CLOCK, alarm);
                     PendingIntent pi = PendingIntent.getActivity(BootAlarmActivity.this, alarm.id, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
