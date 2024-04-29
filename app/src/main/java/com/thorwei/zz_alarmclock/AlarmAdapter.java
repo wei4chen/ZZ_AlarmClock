@@ -11,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import java.util.Arrays;
 import java.util.List;
 
 public class AlarmAdapter extends BaseAdapter {
@@ -57,7 +59,8 @@ public class AlarmAdapter extends BaseAdapter {
 
         String strTime = String.format("%02d:%02d", bufAlarm.hour, bufAlarm.minute);
         alarmlistTime.setText(strTime);
-        alarmlistTag.setText(bufAlarm.tag);
+        String strTag = bufAlarm.tag + "  " + getRepeatString(bufAlarm.repeat);
+        alarmlistTag.setText(strTag);
         alarmlistSwitch.setChecked(bufAlarm.enable);
         alarmlistSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -76,6 +79,27 @@ public class AlarmAdapter extends BaseAdapter {
         return convertView;
     }
 
+    private String getRepeatString(int repeat) {
+        boolean[] flags = new boolean[] {false,false,false,false,false,false,false};
+        String remindString = "";
+        if (repeat == 0) {
+            remindString = "";
+        } else if (repeat == 127) {
+            Arrays.fill(flags, true);
+            remindString = mContext.getString(R.string.alarmRepeatEveryDay);
+        } else {
+            int[] StrweekId = new int[] {R.string.sunday, R.string.monday, R.string.tuesday, R.string.wednesday, R.string.thursday, R.string.friday, R.string.saturday};
+            for(int i=0;i<7;i++) {
+                if ((repeat&(0x1<<i)) != 0) {
+                    flags[i] = true;
+                    if(!remindString.equals(""))
+                        remindString += ",";
+                    remindString += mContext.getString(StrweekId[i]);
+                }
+            }
+        }
+        return remindString;
+    }
 
 
 }
