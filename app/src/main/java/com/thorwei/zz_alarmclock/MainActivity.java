@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,6 +19,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,14 +35,26 @@ import java.util.Objects;
 
 import android.Manifest;
 
+import com.thorwei.zz_alarmclock.api.RetrofitApiProvider;
+import com.thorwei.zz_alarmclock.weather.Weather;
+import com.thorwei.zz_alarmclock.weather.WeatherResponseModel;
+import com.thorwei.zz_alarmclock.weather.WeatherTempConverter;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "weitest";
+
+    ImageView weatherIcon;
+    TextView tvLocation, tvCondition, tvTemp;
+    ImageView imageView;
     ListView alarmListView;
     private AlarmAdapter alarmAdapter;
     private List<AlarmModel> alarmList;
 
-    ImageView imageView;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -172,6 +187,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void init() {
+        weatherIcon = (ImageView)findViewById(R.id.image_weather_icon);
+        tvLocation = (TextView)findViewById(R.id.tv_location);
+        tvCondition = (TextView)findViewById(R.id.tv_condition);
+        tvTemp = (TextView)findViewById(R.id.tv_temp);
+        loadWeather("kaohsiung,tw");
+
+
         imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -197,6 +219,85 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, AlarmClockService.class));
     }
+
+    private void loadWeather(String city) {
+        Log.d(TAG,"loadWeather_city:"+city);
+        RetrofitApiProvider apiProvider = new RetrofitApiProvider();
+        apiProvider.getWeather(city, new Callback<WeatherResponseModel>() {
+            @Override
+            public void onResponse(Call<WeatherResponseModel> call, Response<WeatherResponseModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e(TAG,getString(R.string.weather_update));
+                    populateWeather(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherResponseModel> call, Throwable t) {
+                Log.e(TAG,getString(R.string.failure_network));
+            }
+        });
+    }
+
+    private void populateWeather(Response<WeatherResponseModel> response) {
+        Log.e(TAG,getString(R.string.failure_network));
+        Weather weather[] = response.body().getWeathers();
+        tvLocation.setText(response.body().getName());
+        tvCondition.setText(weather[0].getMain());
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String tFormat = preferences.getString(getString(R.string.pref_temp_format_key), getString(R.string.pref_default_temp_format));
+
+        //Log.e(TAG, "temp:"+response.body().getMain().getTemp()+"C");
+        if (tFormat.equals(getString(R.string.pref_temp_celsius))) {
+            tvTemp.setText(WeatherTempConverter.convertToCelsius(response.body().getMain().getTemp()).intValue() + getString(R.string.cel));
+        } else {
+            tvTemp.setText(WeatherTempConverter.convertToFahrenheit(response.body().getMain().getTemp()).intValue() + getString(R.string.fahr));
+        }
+
+        switch (weather[0].getIcon()) {
+            case "01d":
+                weatherIcon.setImageResource(R.drawable.icon01d);
+                break;
+            case "01n":
+                weatherIcon.setImageResource(R.drawable.icon01n);
+                break;
+            case "02d":
+                weatherIcon.setImageResource(R.drawable.icon02d);
+            case "02n":
+                weatherIcon.setImageResource(R.drawable.icon02n);
+                break;
+            case "03d":
+            case "03n":
+            case "04d":
+            case "04n":
+                weatherIcon.setImageResource(R.drawable.icon03);
+                break;
+            case "09d":
+            case "09n":
+                weatherIcon.setImageResource(R.drawable.icon09);
+                break;
+            case "10d":
+            case "10n":
+                weatherIcon.setImageResource(R.drawable.icon10);
+                break;
+            case "11d":
+            case "11n":
+                weatherIcon.setImageResource(R.drawable.icon11);
+                break;
+            case "13d":
+            case "13n":
+                weatherIcon.setImageResource(R.drawable.icon13);
+                break;
+            case "50d":
+            case "50n":
+                weatherIcon.setImageResource(R.drawable.icon50);
+                break;
+        }
+    }
+
+
+
 
     public void addAlarm(View view) {
         Intent intent = new Intent(this, AddAlarmActivity.class);
